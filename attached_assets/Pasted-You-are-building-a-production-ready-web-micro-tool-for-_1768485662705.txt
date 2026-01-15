@@ -1,0 +1,88 @@
+You are building a production-ready web micro-tool for Recruiterflow called
+“Agency Velocity Audit”.
+
+Branding & Visual Direction:
+- Match Recruiterflow’s existing product UI (clean, calm, premium)
+- Primary color: Recruiterflow blue
+- White backgrounds, subtle light-grey borders
+- Rounded containers, minimal shadows
+- Avoid gradients, avoid heavy animations, avoid marketing-style visuals
+- Typography should feel like a product, not a landing page
+
+UI Flow:
+1. Welcome Screen
+   - Header: “Agency Velocity Audit”
+   - Subtext: “Take this 30-second audit to benchmark your tracking vs top agencies.”
+   - Primary CTA: “Start Audit”
+   - Show a custom SVG rocket icon above the title
+   - Add a very subtle animation to the rocket (slow vertical float or gentle exhaust pulse)
+   - Animation must stop once the user clicks “Start Audit”
+
+2. Questions (4 total)
+   - Card-based answers (4 per question)
+   - Each card includes: icon (SVG), title, short helper text
+   - Auto-advance on selection
+   - Show progress indicator (1/4, 2/4, etc.)
+   - Allow back navigation with state preserved
+   - No animations on answer cards
+
+3. Result Screen (IMPORTANT COPY CHANGE)
+   - Do NOT say “See how Recruiterflow solves this”
+   - Position the CTA as a conversation / validation step, not a demo
+
+   Use this structure:
+   - Header: “What this means for your agency”
+   - Body copy explaining the category in a calm, diagnostic tone
+   - Explain what agencies at this stage typically struggle with
+   - Set expectations for a short, tailored conversation
+
+   CTA Button:
+   - Label: “Talk to a Recruiterflow specialist”
+   - Subtext: “15–20 minutes · No prep needed”
+   - CTA opens a configurable Calendly link
+
+Scoring Logic:
+- Config-driven scoring via quiz.json
+- Each answer contributes to a score
+- Score maps to one of 4 categories:
+  - Reactive
+  - Manual
+  - Managed
+  - High-velocity
+- Result copy must be editable via config, not hardcoded
+
+Personalization:
+- Read URL parameters:
+  - company, persona, industry, utm_source, utm_campaign
+- If company exists, subtly personalize the welcome headline
+- Sanitize all inputs
+
+Webflow Compatibility (Critical):
+- App must support script-based embedding into a div:
+  <div id="rf-agency-audit"></div>
+- Also support iframe embedding as fallback
+- Must be fully responsive and not overflow Webflow containers
+- Avoid global CSS pollution
+
+Tech Stack:
+- React + Vite + TypeScript
+- Tailwind or scoped CSS
+- Single JSON config file for questions, scoring, results, and CTA links
+
+Analytics (MVP):
+- Emit events via a simple emit() function:
+  - audit_viewed
+  - audit_started
+  - question_answered
+  - audit_completed
+  - cta_clicked
+- Log to console for now, structured for GA4 later
+
+Deliverables:
+- Working UI matching the provided mockups
+- quiz.json example populated
+- README with:
+  - local setup
+  - build steps
+  - Webflow embed instructions
+  - how to edit questions and result copy

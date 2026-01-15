@@ -199,44 +199,44 @@ export const quizConfig: QuizConfig = {
       min_score: 4,
       max_score: 7,
       title: "The 'Reactive' Agency",
-      badge_text: "THREAT LEVEL: CRITICAL",
+      badge_text: "ASSESSMENT: CRITICAL",
       badge_color: "critical",
-      headline: "You are currently flying blind.",
-      description: "Our analysis shows your agency relies heavily on lagging indicators. By the time you spot a revenue gap, it's often too late to fix it.\n\nCompetitors with automated tracking are moving 3x faster than you.",
-      cta_label: "Fix Your Data Visibility"
+      headline: "What this means for your agency",
+      description: "Agencies at this stage typically discover performance gaps after they've already impacted revenue. Without real-time visibility, your team spends valuable time piecing together information instead of acting on it.\n\nThis often leads to missed targets, delayed course corrections, and difficulty scaling operations predictably.",
+      cta_label: "Talk to a Recruiterflow specialist"
     },
     {
       category_id: "manual",
       min_score: 8,
       max_score: 11,
       title: "The 'Manual' Agency",
-      badge_text: "THREAT LEVEL: HIGH",
+      badge_text: "ASSESSMENT: DEVELOPING",
       badge_color: "warning",
-      headline: "Your team is spending too much time on reports.",
-      description: "You have some visibility, but it's inconsistent and labor-intensive. Manual processes mean data is often outdated by the time decisions are made.\n\nYou're leaving revenue on the table with every delayed insight.",
-      cta_label: "Automate Your Reporting"
+      headline: "What this means for your agency",
+      description: "Your agency has foundational processes, but they require significant manual effort to maintain. Teams at this stage often struggle with data consistency and spend hours on reporting that could be automated.\n\nThe gap between what you know and when you know it creates friction in decision-making and client communication.",
+      cta_label: "Talk to a Recruiterflow specialist"
     },
     {
       category_id: "managed",
       min_score: 12,
       max_score: 14,
       title: "The 'Managed' Agency",
-      badge_text: "STATUS: IMPROVING",
+      badge_text: "ASSESSMENT: SOLID",
       badge_color: "moderate",
-      headline: "You're on the right track.",
-      description: "Your agency has repeatable processes and decent visibility. However, there's still room to move from reactive to proactive operations.\n\nSmall optimizations could unlock significant efficiency gains.",
-      cta_label: "Optimize Your Workflow"
+      headline: "What this means for your agency",
+      description: "Your agency has established good operational habits with reasonable visibility into performance. The opportunity now is moving from reactive to predictive—anticipating issues before they become problems.\n\nAgencies at this stage often benefit from fine-tuning their existing systems rather than overhauling them.",
+      cta_label: "Talk to a Recruiterflow specialist"
     },
     {
       category_id: "high-velocity",
       min_score: 15,
       max_score: 16,
       title: "The 'High-Velocity' Agency",
-      badge_text: "STATUS: EXCELLENT",
+      badge_text: "ASSESSMENT: EXCELLENT",
       badge_color: "success",
-      headline: "You're operating at peak performance.",
-      description: "Congratulations! Your agency has real-time visibility and proactive operations. You're in the top tier of recruiting agencies.\n\nLet's explore how to maintain and extend your competitive advantage.",
-      cta_label: "Explore Advanced Features"
+      headline: "What this means for your agency",
+      description: "Your agency operates with strong real-time visibility and proactive workflows. You're ahead of most recruiting firms in operational maturity.\n\nAt this stage, the focus shifts to maintaining your edge—scaling what works, identifying blind spots, and preparing for growth.",
+      cta_label: "Talk to a Recruiterflow specialist"
     }
   ],
   cta: {

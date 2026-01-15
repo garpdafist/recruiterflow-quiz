@@ -77,19 +77,19 @@ export function ResultScreen() {
             </span>
           </div>
           
+          <h2 
+            className="text-lg md:text-xl font-medium text-muted-foreground mb-2"
+            data-testid="text-result-category"
+          >
+            {computedCategory.title}
+          </h2>
+          
           <h1 
-            className="text-2xl md:text-3xl font-bold text-foreground mb-3"
+            className="text-2xl md:text-3xl font-bold text-foreground mb-6"
             data-testid="text-result-title"
           >
-            Category: {computedCategory.title}
-          </h1>
-          
-          <p 
-            className="text-base md:text-lg font-medium text-foreground mb-6"
-            data-testid="text-result-headline"
-          >
             {computedCategory.headline}
-          </p>
+          </h1>
           
           <div className="space-y-4 mb-8 md:mb-10">
             {descriptionParts.map((paragraph, index) => (
@@ -104,18 +104,18 @@ export function ResultScreen() {
           </div>
           
           <Card className="w-full max-w-md p-6 md:p-8 bg-card">
-            <p className="text-base font-semibold text-foreground mb-4">
-              See how Recruiterflow solves this:
-            </p>
-            
             <Button
               size="lg"
               onClick={handleCtaClick}
-              className="w-full px-8 py-6 text-base font-semibold rounded-xl"
+              className="w-full px-8 py-6 text-base font-semibold rounded-xl mb-3"
               data-testid="button-cta"
             >
               {computedCategory.cta_label}
             </Button>
+            
+            <p className="text-sm text-muted-foreground">
+              15-20 minutes · No prep needed
+            </p>
           </Card>
         </div>
       </div>
