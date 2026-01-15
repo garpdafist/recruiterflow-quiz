@@ -9,6 +9,12 @@ interface AnalyticsPayload {
   [key: string]: string | number | boolean | undefined;
 }
 
+declare global {
+  interface Window {
+    gtag?: (command: string, eventName: string, params: object) => void;
+  }
+}
+
 export function emitAnalyticsEvent(eventName: AnalyticsEventName, payload: AnalyticsPayload = {}): void {
   const event = {
     event: eventName,
@@ -18,7 +24,7 @@ export function emitAnalyticsEvent(eventName: AnalyticsEventName, payload: Analy
   
   console.log("[Analytics]", event);
 
-  if (typeof window !== "undefined" && (window as Window & { gtag?: (command: string, eventName: string, params: object) => void }).gtag) {
-    (window as Window & { gtag: (command: string, eventName: string, params: object) => void }).gtag("event", eventName, payload);
+  if (typeof window !== "undefined" && window.gtag) {
+    window.gtag("event", eventName, payload);
   }
 }
