@@ -61,28 +61,28 @@ export const quizConfig: QuizConfig = {
           id: "q1_a",
           label: "Instantly",
           subtext: "Real-time automated data",
-          icon: "zap",
+          icon: "⚡",
           score: 4
         },
         {
           id: "q1_b",
           label: "Weekly",
           subtext: "After checking reports",
-          icon: "bar-chart",
+          icon: "📊",
           score: 3
         },
         {
           id: "q1_c",
           label: "Monthly",
           subtext: "At the end of the month",
-          icon: "calendar",
+          icon: "📅",
           score: 2
         },
         {
           id: "q1_d",
           label: "Too late",
           subtext: "When it's a problem",
-          icon: "flame",
+          icon: "🔥",
           score: 1
         }
       ]
@@ -96,28 +96,28 @@ export const quizConfig: QuizConfig = {
           id: "q2_a",
           label: "Automation",
           subtext: "Live CRM data",
-          icon: "bot",
+          icon: "🤖",
           score: 4
         },
         {
           id: "q2_b",
           label: "BI Tools",
           subtext: "Manual dashboards",
-          icon: "trending-up",
+          icon: "📈",
           score: 3
         },
         {
           id: "q2_c",
           label: "Excel / Sheets",
           subtext: "Manual exports",
-          icon: "file-spreadsheet",
+          icon: "📋",
           score: 2
         },
         {
           id: "q2_d",
           label: "Meetings",
           subtext: "Ad-hoc updates",
-          icon: "users",
+          icon: "👥",
           score: 1
         }
       ]
@@ -131,28 +131,28 @@ export const quizConfig: QuizConfig = {
           id: "q3_a",
           label: "Auto-logged",
           subtext: "System captures everything",
-          icon: "cpu",
+          icon: "🖥️",
           score: 4
         },
         {
           id: "q3_b",
           label: "Daily reports",
           subtext: "Recruiters submit logs",
-          icon: "clipboard-list",
+          icon: "📝",
           score: 3
         },
         {
           id: "q3_c",
           label: "Weekly check-ins",
           subtext: "Team meetings",
-          icon: "calendar-check",
+          icon: "✅",
           score: 2
         },
         {
           id: "q3_d",
           label: "We don't",
           subtext: "Trust-based system",
-          icon: "help-circle",
+          icon: "❓",
           score: 1
         }
       ]
@@ -166,28 +166,28 @@ export const quizConfig: QuizConfig = {
           id: "q4_a",
           label: "Same day",
           subtext: "Automated alerts",
-          icon: "bell",
+          icon: "🔔",
           score: 4
         },
         {
           id: "q4_b",
           label: "Within a week",
           subtext: "Pipeline reviews",
-          icon: "clock",
+          icon: "⏰",
           score: 3
         },
         {
           id: "q4_c",
           label: "When asked",
           subtext: "Client follow-ups",
-          icon: "phone",
+          icon: "📞",
           score: 2
         },
         {
           id: "q4_d",
           label: "Too late",
           subtext: "After it's lost",
-          icon: "x-circle",
+          icon: "❌",
           score: 1
         }
       ]
