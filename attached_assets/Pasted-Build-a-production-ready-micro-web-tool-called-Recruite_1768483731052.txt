@@ -1,0 +1,83 @@
+Build a production-ready micro web tool called “Recruiterflow Agency Velocity Audit” that runs as a standalone web app AND can be embedded seamlessly into Webflow.
+
+Core UX:
+
+Screen 0 (Welcome): logo + “Agency Velocity Audit” + 1–2 line description + primary CTA “Start Audit”
+
+Screen 1–4: 4 questions total, each with a title, subtitle, and 4 answer cards (icon, label, subtext)
+
+Show progress indicator “1/4”, “2/4”, etc. in the top-right
+
+On selecting an answer, auto-advance to the next question
+
+Allow back navigation via a back arrow in the top-left (preserve prior answers)
+
+Final screen (Results):
+
+Show a category title (ex: “Category: The ‘Reactive’ Agency”)
+
+Show a short explanation paragraph (2–4 lines)
+
+Show a single primary CTA button that opens Calendly (“Talk to our team” / “Book a demo”)
+
+The CTA label + Calendly link must be configurable
+
+Scoring / Logic:
+
+Use a config-driven scoring model:
+
+Each answer option maps to a score or tag.
+
+Total score maps to 1 of 4 categories (ex: “Reactive”, “Manual”, “Managed”, “High-velocity”).
+
+Store: selected answers, total score, category, and query-string personalization params.
+
+Personalization:
+
+Read URL params such as:
+
+company, persona, industry, source, utm_source, utm_campaign
+
+If company exists, update welcome headline subtly (ex: “Agency Velocity Audit for {company}”).
+
+Always sanitize user inputs.
+
+Webflow embedding requirement:
+
+Must support BOTH:
+
+Script-embed mount into a div (preferred): <div id="rf-agency-audit"></div>
+
+iFrame embed (fallback)
+
+Provide a lightweight embed snippet and ensure responsive sizing.
+
+Avoid requiring server-side rendering.
+
+Analytics:
+
+Emit GA4-friendly events (just console.log event payloads in dev mode; provide a hook to connect GA4 later):
+
+audit_viewed, audit_started, question_answered (question_id, answer_id), audit_completed (category), cta_clicked
+
+Engineering:
+
+Build with React + Vite + TypeScript.
+
+Use a single JSON config file for questions, answers, scoring, result copy, and calendly link routing.
+
+Keep styling clean, similar to the provided mockups: large rounded container, subtle border/shadow, big buttons, modern typography.
+
+Output should include:
+
+/src with components
+
+/public embed file if needed
+
+README with: how to run, how to build, how to host, how to embed in Webflow, and how to edit quiz.json
+
+Deliver a working UI with sample questions matching the mockups:
+Q1: “How fast do you spot missed targets?”
+Q2: “What drives your forecasting?”
+Q3/Q4: Create similar operational questions aligned to agency recruiting workflow tracking.
+Results: include at least 4 categories with short copy and CTA.

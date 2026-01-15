@@ -1,0 +1,181 @@
+# PRD — Recruiterflow Agency Velocity Audit (Web + Webflow Embed)
+
+## 1. Purpose
+Create a lightweight “audit-style” interactive quiz that identifies where a recruiting agency is in its operational maturity/visibility journey and routes them to a Calendly booking CTA.
+
+This is designed for:
+- 1:1 ABM campaigns (primary)
+- broader paid/organic campaigns (secondary)
+
+## 2. Goals
+### Primary
+- Increase Calendly bookings (demo / talk-to-team)
+- Increase ABM conversion by making the experience feel personalized and diagnostic
+- Capture “journey stage” + operational pain areas for sales context
+
+### Secondary
+- Reusable landing module inside Webflow pages without engineering overhead
+- Provide analytics on completion + category distribution
+
+## 3. Target Audience
+- Recruitment/staffing agencies (owners, ops leaders, lead recruiters)
+- Teams evaluating ATS/CRM tools or trying to improve pipeline visibility, forecasting, and execution
+
+## 4. User Flow
+1) Welcome Screen
+- Title: “Agency Velocity Audit”
+- Subtext: “Take this 30-second audit to benchmark tracking vs. top agencies.”
+- CTA: “Start Audit”
+
+2) Questions (4 total)
+- Card-based options (4 per question)
+- Auto-advance on selection
+- Progress indicator (e.g., 1/4)
+- Back arrow to revise previous answers
+
+3) Results Screen
+- Category label (e.g., “The ‘Reactive’ Agency”)
+- 2–4 line explanation
+- Primary CTA button: “Talk to our team” or “Book a demo”
+- Opens Calendly
+
+## 5. Quiz Content Requirements
+- 4 questions in MVP (can be expanded later)
+- Answer options must be:
+  - short labels (1–2 words)
+  - supportive subtext (1 line)
+  - icon placeholder support
+
+## 6. Scoring & Categorization
+- Config-driven scoring:
+  - Each answer contributes a score or tag
+- Total score maps to one of 4 categories:
+  - Reactive (low visibility)
+  - Manual (inconsistent visibility)
+  - Managed (repeatable process)
+  - High-velocity (high visibility + proactive)
+
+## 7. Personalization (ABM)
+Support URL params:
+- company, persona, industry, source, utm_source, utm_campaign
+Rules:
+- If company present, personalize welcome header subtly
+- Always provide a clean fallback if params missing
+- Sanitize all param values
+
+## 8. CTA & Calendly
+- CTA label + Calendly link must be configurable
+- Optional future: route Calendly link by category/persona (ABM optimization)
+
+## 9. Analytics Events (MVP)
+Emit events (GA4-friendly naming):
+- audit_viewed
+- audit_started
+- question_answered (question_id, answer_id)
+- audit_completed (category, score)
+- cta_clicked (calendly_url)
+
+## 10. Non-Functional Requirements
+- Mobile responsive
+- Fast load (optimize bundle)
+- Accessible interactions (keyboard focus, ARIA labels)
+- Works embedded in Webflow without breaking layout
+
+## 11. Out of Scope (MVP)
+- Admin panel to edit questions
+- Auth/login
+- CRM writebacks (HubSpot/Salesforce)
+- Multi-language
+- Deep branching logic
+
+
+---
+
+# TRD — Recruiterflow Agency Velocity Audit (Replit Build + Webflow Embed)
+
+## 1. Architecture
+### Recommended
+A standalone static web app (React + Vite + TypeScript) that can be:
+- hosted as its own URL (subdomain or path)
+- embedded into Webflow via:
+  A) script mount (preferred)
+  B) iframe embed (fallback)
+
+## 2. Webflow Seamless Embedding
+### Option A: Script Mount (Preferred)
+- Webflow adds:
+  - <div id="rf-agency-audit"></div>
+- Webflow includes generated JS bundle via script tag
+- App mounts into the div and inherits page context
+
+Pros:
+- cleaner analytics + UTM capture
+- better brand consistency
+
+### Option B: iFrame (Fallback)
+- Webflow embeds:
+  - <iframe src="https://.../agency-audit?utm_..." />
+Pros:
+- fastest to deploy
+Cons:
+- analytics needs postMessage if you want parent-page GA4
+
+## 3. Frontend Stack
+- React + Vite + TypeScript
+- Styling: Tailwind or CSS modules
+- Config file: quiz.json
+
+## 4. Data Model
+### quiz.json should include:
+- metadata: title, subtitle
+- questions: [{ id, title, subtitle, options: [{ id, label, subtext, icon, score }] }]
+- results: [{ category_id, min_score, max_score, title, badge_text, description }]
+- cta: { default_label, default_calendly_url, routing_rules(optional) }
+
+## 5. State Management
+In-memory state (MVP):
+- currentStep
+- answers map { questionId: optionId }
+- totalScore
+- computedCategory
+Optional:
+- localStorage (to prevent accidental loss on refresh)
+
+## 6. Personalization
+- Read URLSearchParams at app load
+- Supported: company, persona, industry, source, utm_source, utm_campaign
+- Sanitize inputs (no HTML injection)
+- Expose personalization object to components
+
+## 7. Analytics
+- Provide a single event emitter function:
+  emit(eventName, payload)
+MVP:
+- console.log payloads
+Production:
+- can be wired to GA4 / Segment
+
+## 8. Calendly Handling
+- CTA opens calendly link in same tab or new tab (configurable)
+- Append useful params:
+  - category, score, company, persona, utm_campaign (as query params where possible)
+
+## 9. Hosting & Handoff
+Replit is for development only.
+Handoff package to Recruiterflow dev:
+- /dist build output
+- quiz.json
+- README:
+  - local dev
+  - build steps
+  - embed snippets (script + iframe)
+  - how to edit quiz.json
+  - event names + payload schema
+
+## 10. QA Checklist
+- All steps render on mobile and desktop
+- Progress indicator correct
+- Back navigation restores previous selections
+- Category mapping correct at score boundaries
+- CTA works + preserves UTMs
+- Webflow embed works without layout overflow
