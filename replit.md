@@ -21,8 +21,8 @@ An interactive 4-question audit tool for recruitment agencies to benchmark their
 - Manages: currentStep, answers, score, category
 
 ### Configuration
-- `client/src/lib/quiz-config.ts` - All quiz content (questions, answers, results, CTAs)
-- `public/quiz.json` - JSON version of config for reference
+- `client/public/quiz.json` - All quiz content (loaded at runtime)
+- `client/src/lib/quiz-config.ts` - TypeScript types for config schema
 - `client/src/lib/personalization.ts` - URL parameter handling for ABM
 - `client/src/lib/analytics.ts` - GA4-compatible event emitting
 
