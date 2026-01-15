@@ -1,5 +1,5 @@
 import { createContext, useContext, useState, useCallback, useEffect, type ReactNode } from "react";
-import { quizConfig, type QuizResult } from "./quiz-config";
+import { loadQuizConfig, getQuizConfig, type QuizConfig, type QuizResult } from "./quiz-config";
 import { getPersonalizationParams, type PersonalizationParams } from "./personalization";
 import { emitAnalyticsEvent } from "./analytics";
 
@@ -12,21 +12,24 @@ interface QuizState {
   totalScore: number;
   computedCategory: QuizResult | null;
   personalization: PersonalizationParams;
+  isLoading: boolean;
+  config: QuizConfig | null;
 }
 
-interface QuizContextValue extends QuizState {
+interface QuizContextValue extends Omit<QuizState, 'config'> {
   startQuiz: () => void;
   answerQuestion: (questionId: string, optionId: string, score: number) => void;
   goBack: () => void;
   resetQuiz: () => void;
   totalQuestions: number;
+  config: QuizConfig | null;
 }
 
 const QuizContext = createContext<QuizContextValue | null>(null);
 
 const STORAGE_KEY = "rf-agency-audit-state";
 
-function loadSavedState(): Partial<QuizState> | null {
+function loadSavedState(config: QuizConfig): Partial<QuizState> | null {
   try {
     const saved = localStorage.getItem(STORAGE_KEY);
     if (saved) {
@@ -34,7 +37,7 @@ function loadSavedState(): Partial<QuizState> | null {
       if (parsed.answers && Object.keys(parsed.answers).length > 0) {
         let recomputedScore = 0;
         Object.entries(parsed.answers).forEach(([questionId, optionId]) => {
-          const question = quizConfig.questions.find(q => q.id === questionId);
+          const question = config.questions.find(q => q.id === questionId);
           if (question) {
             const option = question.options.find(o => o.id === optionId);
             if (option) {
@@ -44,7 +47,7 @@ function loadSavedState(): Partial<QuizState> | null {
         });
         parsed.totalScore = recomputedScore;
         if (parsed.currentStep === "result") {
-          parsed.computedCategory = computeResult(recomputedScore);
+          parsed.computedCategory = computeResult(recomputedScore, config);
         }
       }
       return parsed;
@@ -56,7 +59,8 @@ function loadSavedState(): Partial<QuizState> | null {
 
 function saveState(state: QuizState): void {
   try {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+    const { config, isLoading, ...stateToSave } = state;
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(stateToSave));
   } catch {
   }
 }
@@ -68,49 +72,66 @@ function clearSavedState(): void {
   }
 }
 
-function computeResult(score: number): QuizResult | null {
-  return quizConfig.results.find(
+function computeResult(score: number, config: QuizConfig): QuizResult | null {
+  return config.results.find(
     (result) => score >= result.min_score && score <= result.max_score
   ) || null;
 }
 
 export function QuizProvider({ children }: { children: ReactNode }) {
-  const [state, setState] = useState<QuizState>(() => {
-    const saved = loadSavedState();
-    const personalization = getPersonalizationParams();
-    
-    if (saved && saved.currentStep !== "welcome") {
-      return {
-        currentStep: saved.currentStep || "welcome",
-        currentQuestionIndex: saved.currentQuestionIndex || 0,
-        answers: saved.answers || {},
-        totalScore: saved.totalScore || 0,
-        computedCategory: saved.computedCategory || null,
-        personalization
-      };
-    }
-    
-    return {
-      currentStep: "welcome",
-      currentQuestionIndex: 0,
-      answers: {},
-      totalScore: 0,
-      computedCategory: null,
-      personalization
-    };
+  const [state, setState] = useState<QuizState>({
+    currentStep: "welcome",
+    currentQuestionIndex: 0,
+    answers: {},
+    totalScore: 0,
+    computedCategory: null,
+    personalization: getPersonalizationParams(),
+    isLoading: true,
+    config: null
   });
 
   useEffect(() => {
-    saveState(state);
-  }, [state]);
-
-  useEffect(() => {
-    emitAnalyticsEvent("audit_viewed", {
-      company: state.personalization.company,
-      utm_source: state.personalization.utm_source,
-      utm_campaign: state.personalization.utm_campaign
+    loadQuizConfig().then((config) => {
+      const saved = loadSavedState(config);
+      const personalization = getPersonalizationParams();
+      
+      if (saved && saved.currentStep !== "welcome") {
+        setState({
+          currentStep: saved.currentStep || "welcome",
+          currentQuestionIndex: saved.currentQuestionIndex || 0,
+          answers: saved.answers || {},
+          totalScore: saved.totalScore || 0,
+          computedCategory: saved.computedCategory || null,
+          personalization,
+          isLoading: false,
+          config
+        });
+      } else {
+        setState({
+          currentStep: "welcome",
+          currentQuestionIndex: 0,
+          answers: {},
+          totalScore: 0,
+          computedCategory: null,
+          personalization,
+          isLoading: false,
+          config
+        });
+      }
+      
+      emitAnalyticsEvent("audit_viewed", {
+        company: personalization.company,
+        utm_source: personalization.utm_source,
+        utm_campaign: personalization.utm_campaign
+      });
     });
   }, []);
+
+  useEffect(() => {
+    if (!state.isLoading) {
+      saveState(state);
+    }
+  }, [state]);
 
   const startQuiz = useCallback(() => {
     emitAnalyticsEvent("audit_started", {
@@ -134,18 +155,20 @@ export function QuizProvider({ children }: { children: ReactNode }) {
     });
 
     setState((prev) => {
+      if (!prev.config) return prev;
+      
       const newAnswers = { ...prev.answers, [questionId]: optionId };
       const previousScore = prev.answers[questionId]
-        ? quizConfig.questions[prev.currentQuestionIndex].options.find(
+        ? prev.config.questions[prev.currentQuestionIndex].options.find(
             (o) => o.id === prev.answers[questionId]
           )?.score || 0
         : 0;
       const newTotalScore = prev.totalScore - previousScore + score;
       
-      const isLastQuestion = prev.currentQuestionIndex >= quizConfig.questions.length - 1;
+      const isLastQuestion = prev.currentQuestionIndex >= prev.config.questions.length - 1;
       
       if (isLastQuestion) {
-        const result = computeResult(newTotalScore);
+        const result = computeResult(newTotalScore, prev.config);
         
         emitAnalyticsEvent("audit_completed", {
           category: result?.category_id,
@@ -172,11 +195,13 @@ export function QuizProvider({ children }: { children: ReactNode }) {
 
   const goBack = useCallback(() => {
     setState((prev) => {
+      if (!prev.config) return prev;
+      
       if (prev.currentStep === "result") {
         return {
           ...prev,
           currentStep: "question",
-          currentQuestionIndex: quizConfig.questions.length - 1
+          currentQuestionIndex: prev.config.questions.length - 1
         };
       }
       
@@ -196,14 +221,15 @@ export function QuizProvider({ children }: { children: ReactNode }) {
 
   const resetQuiz = useCallback(() => {
     clearSavedState();
-    setState({
+    setState((prev) => ({
+      ...prev,
       currentStep: "welcome",
       currentQuestionIndex: 0,
       answers: {},
       totalScore: 0,
       computedCategory: null,
       personalization: getPersonalizationParams()
-    });
+    }));
   }, []);
 
   return (
@@ -214,7 +240,7 @@ export function QuizProvider({ children }: { children: ReactNode }) {
         answerQuestion,
         goBack,
         resetQuiz,
-        totalQuestions: quizConfig.questions.length
+        totalQuestions: state.config?.questions.length || 0
       }}
     >
       {children}

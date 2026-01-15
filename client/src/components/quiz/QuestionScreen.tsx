@@ -1,6 +1,5 @@
 import { Header, ProgressDots } from "./Header";
 import { AnswerCard } from "./AnswerCard";
-import { quizConfig } from "@/lib/quiz-config";
 import { useQuiz } from "@/lib/quiz-context";
 import { cn } from "@/lib/utils";
 
@@ -10,10 +9,13 @@ export function QuestionScreen() {
     answers, 
     answerQuestion, 
     goBack,
-    totalQuestions 
+    totalQuestions,
+    config
   } = useQuiz();
   
-  const question = quizConfig.questions[currentQuestionIndex];
+  if (!config) return null;
+  
+  const question = config.questions[currentQuestionIndex];
   const selectedOptionId = answers[question.id];
   
   const handleSelectOption = (optionId: string, score: number) => {

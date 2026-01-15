@@ -1,13 +1,14 @@
 import { Button } from "@/components/ui/button";
 import { Header } from "./Header";
-import { quizConfig } from "@/lib/quiz-config";
 import { getPersonalizedTitle } from "@/lib/personalization";
 import { useQuiz } from "@/lib/quiz-context";
 
 export function WelcomeScreen() {
-  const { startQuiz, personalization } = useQuiz();
-  const { metadata } = quizConfig;
+  const { startQuiz, personalization, config } = useQuiz();
   
+  if (!config) return null;
+  
+  const { metadata } = config;
   const personalizedTitle = getPersonalizedTitle(metadata.title, personalization);
   
   return (

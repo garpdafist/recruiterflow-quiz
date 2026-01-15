@@ -2,7 +2,6 @@ import { AlertTriangle, TrendingUp, CheckCircle, Target } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card } from "@/components/ui/card";
 import { Header } from "./Header";
-import { quizConfig } from "@/lib/quiz-config";
 import { useQuiz } from "@/lib/quiz-context";
 import { buildCalendlyUrl } from "@/lib/personalization";
 import { emitAnalyticsEvent } from "@/lib/analytics";
@@ -32,16 +31,16 @@ const badgeStyles: Record<string, { bg: string; text: string; icon: React.Elemen
 };
 
 export function ResultScreen() {
-  const { computedCategory, totalScore, personalization, goBack } = useQuiz();
+  const { computedCategory, totalScore, personalization, goBack, config } = useQuiz();
   
-  if (!computedCategory) {
+  if (!computedCategory || !config) {
     return null;
   }
   
   const style = badgeStyles[computedCategory.badge_color] || badgeStyles.moderate;
   const BadgeIcon = style.icon;
   
-  const calendlyUrl = buildCalendlyUrl(quizConfig.cta.default_calendly_url, {
+  const calendlyUrl = buildCalendlyUrl(config.cta.default_calendly_url, {
     category: computedCategory.category_id,
     score: totalScore,
     personalization

@@ -1,3 +1,4 @@
+import { Loader2 } from "lucide-react";
 import { Card } from "@/components/ui/card";
 import { QuizProvider, useQuiz } from "@/lib/quiz-context";
 import { WelcomeScreen } from "./WelcomeScreen";
@@ -6,7 +7,15 @@ import { ResultScreen } from "./ResultScreen";
 import { cn } from "@/lib/utils";
 
 function QuizContent() {
-  const { currentStep } = useQuiz();
+  const { currentStep, isLoading } = useQuiz();
+  
+  if (isLoading) {
+    return (
+      <div className="flex-1 flex items-center justify-center">
+        <Loader2 className="w-8 h-8 animate-spin text-primary" />
+      </div>
+    );
+  }
   
   return (
     <>
