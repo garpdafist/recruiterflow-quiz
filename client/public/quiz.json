@@ -194,7 +194,7 @@
     }
   ],
   "cta": {
-    "default_label": "Talk to our team",
-    "default_calendly_url": "https://calendly.com/recruiterflow/demo"
+    "default_label": "Talk to a Recruiterflow specialist",
+    "default_calendly_url": "https://calendly.com/recruiterflow-demo/45minutes"
   }
 }
